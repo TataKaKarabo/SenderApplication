@@ -8,6 +8,7 @@ namespace SenderApplication
     {
         static void Main(string[] args)
         {
+           
             Message myMessage = new Message();
             FactoryConfig factory = new FactoryConfig();
             factory.SendMessage(myMessage.GetMessage());

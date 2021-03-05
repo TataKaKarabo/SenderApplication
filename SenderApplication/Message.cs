@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SenderApplication
 {
-    public class Message
+    public class Message : IMessage
     {
         public string name { set; get; }
 
@@ -20,9 +20,7 @@ namespace SenderApplication
 
         public void DisplayResponse()
         {
-
             Console.WriteLine(responseRecieved);
-
         }
     }
 }

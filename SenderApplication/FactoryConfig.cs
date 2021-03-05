@@ -15,26 +15,37 @@ namespace SenderApplication
         }
 
         #region Send messagen Factory Settings
-        public void SendMessage(string msg)
+        public bool SendMessage(string msg)
         {
+            bool sent = false;
 
-            try
+            if (string.IsNullOrEmpty(msg))
             {
-                ConnectionFactory factory = new ConnectionFactory { HostName = "localhost" };
-                using (var connection = factory.CreateConnection())
-                using (var channel = connection.CreateModel())
+                sent = false;
+            }
+            else
+            {
+                try
                 {
-                    channel.QueueDeclare(queue: "IQBusinessQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+                    ConnectionFactory factory = new ConnectionFactory { HostName = "localhost" };
+                    using (var connection = factory.CreateConnection())
+                    using (var channel = connection.CreateModel())
+                    {
+                        channel.QueueDeclare(queue: "IQBusinessQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                    var body = Encoding.UTF8.GetBytes(msg);
-                    channel.BasicPublish(exchange: "", routingKey: "IQBusinessQueue", basicProperties: null, body: body);
-
+                        var body = Encoding.UTF8.GetBytes(msg);
+                        channel.BasicPublish(exchange: "", routingKey: "IQBusinessQueue", basicProperties: null, body: body);
+                        sent = true;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Oops, something went wrong, please try again: " + Environment.NewLine + "More Information: " + ex.ToString());
+                }
+
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Oops, something went wrong, please try again: " + Environment.NewLine + "More Information: " + ex.ToString());
-            }
+            
+            return sent;
 
         }
         #endregion
